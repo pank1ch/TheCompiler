@@ -105,17 +105,16 @@ namespace Compiler
 
     enum TokenType
     {
-
         TOKEN_CONST = 1,
-        TOKEN_INTEGER,
         TOKEN_IDENT,
-        TOKEN_EQUALS,
-        TOKEN_SEMICOLON,
-        TOKEN_NUMBER,
-        TOKEN_ERROR,
+        TOKEN_INTEGER,
         TOKEN_WHITESPACE,
         TOKEN_COLON,
-        TOKEN_MINUS   
+        TOKEN_EQUALS,
+        TOKEN_NUMBER,
+        TOKEN_MINUS,
+        TOKEN_SEMICOLON,   
+        TOKEN_ERROR
     };
 
     internal class Token
