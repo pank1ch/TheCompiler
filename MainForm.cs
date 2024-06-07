@@ -13,8 +13,11 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CodeAnalysisTesting.PascalIntConst;
 using static Compiler.CustomTabPage;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using compiler_theory.app.model.polish_notation;
 
 namespace Compiler
 {
@@ -95,6 +98,64 @@ namespace Compiler
                         return;
                     }
                 }
+            }
+        }
+
+        private void StartRecursiveDescentParse()
+        {
+            outputRichTextBox.Text = "";
+            RecursiveDescentParser RecursiveDescentParser = new RecursiveDescentParser();
+            var code = (inputTab.GetTab().TabPages[0] as CustomTabPage).inputRichTextBox.Text;
+
+
+            outputRichTextBox.Text = RecursiveDescentParser.Parse(code);
+            
+        }
+
+        private void StartRegex()
+        {
+            outputRichTextBox.Text = "";
+            var code = (inputTab.GetTab().TabPages[0] as CustomTabPage).inputRichTextBox.Text;
+            
+            List<string> foundFiles = new List<string>();
+            foundFiles = FileNameValidator.GetDocType(code);
+            foreach (string file in foundFiles) {
+
+                outputRichTextBox.Text += file;
+            }
+
+        }
+
+
+        private void StartPoliz()
+        {
+            outputRichTextBox.Text = "";
+            var code = (inputTab.GetTab().TabPages[0] as CustomTabPage).inputRichTextBox.Text;
+            var RPN = new RPN();
+
+            outputRichTextBox.Text = RPN.Calculate(code).ToString();
+            
+        }
+
+
+        private void StartParsing()
+        {
+            outputRichTextBox.Text = "";
+            var code = (inputTab.GetTab().TabPages[0] as CustomTabPage).inputRichTextBox.Text; 
+            var parser = new Analyzer();
+            var analyzer = new Lexer();
+            var errorNumber = 1;
+            var result = parser.Analyze(analyzer.Scan(code)).ToList(); 
+            
+            foreach (var item in result)
+            {
+                var check = (item.ExpectedLexemeType == null) ? "null" : item.ExpectedLexemeType.ToString();
+                var value = code.Substring(item.Span.Start, item.Span.Count);
+                var valueTail = code.Substring(item.TailStart);
+
+                outputRichTextBox.Text += $"{errorNumber} {value} {item.Span.Start} {item.Span.End} {check} {valueTail} \n";
+               
+                errorNumber++;
             }
         }
 
@@ -216,6 +277,11 @@ namespace Compiler
 
         private void RunButton_Click(object sender, EventArgs e)
         {
+            StartRecursiveDescentParse();
+            //StartRegex();
+            //StartPoliz();
+            //StartParsing();
+
 
         }
 
@@ -426,7 +492,7 @@ namespace Compiler
             localTempTextBox.SelectionLength = localTempTextBox.Text.Length;
             localTempTextBox.SelectionColor = orig;
 
-            outputRichTextBox.Text = Lexer.lexText(localTempTextBox.Text);
+            
 
             outputRichTextBox.Focus();
             foreach (Match match in lexeme_matches)
